@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<libreria>
+  <libro categoria="idiomas">
+    <titulo idioma="en">Aprenda Italiano</titulo>
+    <autor>Giada De Laurentiis</autor>
+    <anio>2005</anio>
+    <precio>30.00</precio>
+  </libro>
+  <libro categoria="infantil">
+    <titulo idioma="en">Harry Potter</titulo>
+    <autor>J K. Rowling</autor>
+    <anio>2005</anio>
+    <precio>29.99</precio>
+  </libro>
+  <libro categoria="web">
+    <titulo idioma="en">Learning XML</titulo>
+    <autor>Erik T. Ray</autor>
+    <anio>2003</anio>
+    <precio>39.95</precio>
+  </libro>
+</libreria> 

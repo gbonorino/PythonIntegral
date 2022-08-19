@@ -7,48 +7,9 @@ import pandas as pd
 import os, glob
 import randomname
 
-TIME_LIMIT = 20 #seconds
+TIME_LIMIT = 5 #seconds
 
 
-def get_name():
-    loop = True
-    while loop:
-        name = randomname.get_name()
-        if not os.path.exists(f'{name}.csv'):
-            loop = False
-    return 
-
-def gen_question():
-    #randomly choose two numbers in a range, alongside an operator
-    operators = ['+','-','//','*']
-    a,b = random.randint(1,10), random.randint(1,10)
-    op = random.choice(operators)
-    
-    #construct the question text and evaluate the calculation
-    ques = f"What is {a} {op} {b}?"
-    ans = eval(f"{a}{op}{b}")
-
-    #we create some purposely incorrect answer options
-    option2 = eval(f"{b}{op}{a}")
-    option3 = eval(f"{b-2}{op}{a+5}")
-    option4 = eval(f"{b}{op}{a}-{a}")
-    #we want to avoid duplicate answer options, so use this inelegant solution
-    while option2 == ans:
-       option2 += 1
-    while option3 == ans or option3 == option2:
-       option3 += 1
-    while option4 == ans or option4 == option2 or option4 == option3:
-       option4 += 1
-    
-    return {'question': ques,
-            'options': {
-            ans: True,
-            option2: False,
-            option3: False,
-            option4: False
-            }
-            }
-    
 def answer(ans):
     st.session_state['correct'] = ans
     if ans == 'True':
@@ -87,41 +48,53 @@ def show_leaderboard(empty_node, show_results=False):
     with empty_node:
         with st.container():
             if show_results:
-                g,h,i = st.columns([6,3,6])
+                g, _ = st.columns([6, 1], gap='medium')
                 #st.subheader("Time's up!")
-                g.info(f"Time's up! You scored a total of **{st.session_state['total_score']:.2f}** \
-                    and answered **{st.session_state['count']}** questions.")
-                h.text('\n'); h.text('\n'); h.text('\n'); h.text('\n'); h.text('\n'); h.text('\n')
-                if h.button('Give me a different name'):
-                    st.session_state['name'] = st.text_input("Como es tu nombre?")
-                if 'name' not in st.session_state.keys():
-                    st.session_state['name'] = st.text_input("Como es tu nombre?")
-                g.markdown(f'Do you want to submit your score to the leaderboard? \n \
-                Your name on the leader board will be **{st.session_state["name"]}**.')
-            else:
-                _,_, i = st.columns([6,6,6])
+                g.info(f"Se acabo el tiempo! Obtuviste un puntaje de **{st.session_state['total_score']:.2f}** \
+                    y respondiste **{st.session_state['count']}** preguntas.")
+                
+                # agregar boton que inicie la condicion para tomar el nombre
+                # y recien mostrar la tabla con el nombre indicado
+                # para evitar que se muestre el ultimo nombre en session_state
+                
+                if st.checkbox("Publicar puntaje en el ranking"):
+                
+                    nombre = g.text_input("Como es tu nombre?")
+                    if len(nombre) > 0:
+                        if not os.path.exists(f'leaderboard_data/{nombre.lower()}.csv'):
+                            st.session_state["name"] = nombre
+                        else:
+                            st.warning("Ya existe el nombre. Proba una variacion.")
+                        
+                    g.markdown(f'Su nombre en el ranking sera ** {st.session_state["name"]} **.')
+                    
+                    if not isinstance(st.session_state['total_score'], float):
+                        st.session_state['total_score'] = 0
+                    
+                    df = pd.DataFrame({'Nombre': st.session_state["name"],
+                            'Puntaje Final': st.session_state['total_score'],
+                            'Preguntas Respondidas': st.session_state['count'],
+                            'Fecha': datetime.today().strftime("%d/%m/%Y")}, index=[0])
+                    g.table(df)
+               
+                    if st.button('Submit my score'):
+                        with st.spinner('Cargando'):
+                            df.to_csv(f'leaderboard_data/{st.session_state["name"]}.csv', index=False)
+                            st.success('Su puntaje se cargo con exito!')
+                            st.session_state['quiz_active'] = False
+                            time.sleep(2)
+                            st.experimental_rerun()
+                
+                l, _ = st.columns([6, 1], gap='medium')
 
-            df_leaderboard = get_all_leaderboard()
-            i.subheader('Leaderboard')
-            i.table(df_leaderboard.sort_values(by='Final score', ascending=False).style.set_table_styles(
-            [{
-                'selector': 'th',
-                'props': [
-                    ('background-color', '#D3D3D3'),
-                    ('font-color', 'gray')]
-            }]))
-            
-            if show_results:
-                if not isinstance(st.session_state['total_score'] , float):
-                    st.session_state['total_score'] = 0
-                df = pd.DataFrame({'Name': st.session_state["name"], 'Final score': st.session_state['total_score'], 'Questions answered': st.session_state['count'], 'Date': datetime.today().strftime("%d/%m/%Y")}, index=[0])
-                g.table(df)
-                if st.button('Submit my score'):
-                    with st.spinner(''):
-                        df.to_csv(f'leaderboard_data/{st.session_state["name"]}.csv', mode='a', index=False)
-                        st.success('Your score has been submitted!')
-                        st.session_state['quiz_active'] = False
-                        time.sleep(2)
-                        st.experimental_rerun()
-            #st.markdown('---')
-            
+                df_leaderboard = get_all_leaderboard()
+                
+                l.subheader('Tabla de Liderazgo')
+                l.table(df_leaderboard.sort_values(by='Puntaje Final', ascending=False).style.set_table_styles(
+                [{
+                    'selector': 'th',
+                    'props': [
+                        ('background-color', '#000000'),
+                        ('font-color', 'white')]
+                }]))
+    

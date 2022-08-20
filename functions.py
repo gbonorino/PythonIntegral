@@ -14,11 +14,11 @@ def answer(ans):
     st.session_state['correct'] = ans
     if ans == 'True':
         #motivate quickfire answers with an exponential decay
-        score = (1 * math.exp(-0.05*(time.time()-st.session_state['time_now'])))*10
+        score = (1 * math.exp(-0.02*(time.time()-st.session_state['time_now'])))*100
         st.session_state['score'] = max(1, score)
     else:
         #penalise wrong answers with a negative score
-        st.session_state['score'] = -10
+        st.session_state['score'] = -5
         
     #update the score but prevent it from becoming negative
     if st.session_state['total_score'] + st.session_state['score'] > 0:

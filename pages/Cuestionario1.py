@@ -1,4 +1,4 @@
-# Page for Quiz 1
+# pagina for cuestionario 1
 
 import streamlit as st 
 import time
@@ -8,10 +8,17 @@ import random
 from functions import *
 from questions import quiz_questions
 
-
 row = None
 
-# queda incorporar multipagina para que cada quiz este en su pestaña
+num = 1
+titulo = f"Cuestionario Modulo {num}"
+TIME_LIMIT = 10
+table_style = [{
+        'selector': 'th',
+        'props': [
+            ('background-color', '#000000'),
+            ('font-color', 'white')]
+        }]
     
 # initialise the session state if keys don't yet exist
 # session state keeps the values of the parameters set during that session
@@ -31,7 +38,7 @@ hide_table_row_index = """
 # Inject CSS with Markdown
 st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
-st.header("Cuestionario Modulo 1")
+st.header(titulo)
 
 i,j,_ = st.columns([1,1.5,5])
 if i.button("Start quiz", key='start_quiz', disabled=st.session_state['quiz_active']):
@@ -55,24 +62,17 @@ if j.button("End quiz and reset", key='reset', disabled=not st.session_state['qu
 
 if not st.session_state['quiz_active']:
     
-    st.write(f'\n Bienvenidos al cuestionario! Tiene {TIME_LIMIT} segundos para responder la mayor cantidad de preguntas que pueda.\n'
+    st.write(f'\n Bienvenidos al cuestionario {num}! Tiene {TIME_LIMIT} segundos para responder la mayor cantidad de preguntas que pueda.\n'
              + '\n Puede reintentar las veces que desee, y publicar su puntaje a la tabla de liderazgo gobal para comparar su rendimiento al de alumnos anteriores.\n'
              + '\n Si no quiere publicar su puntaje simplemente regrese al curso :)')
                 
-    st.write("Agregar: ***Explicacion del puntaje y formato del cuestionario.***")
     
     l, _ = st.columns([6, 1], gap='medium')
 
     df_leaderboard = get_all_leaderboard()
 
     l.subheader('Tabla de Liderazgo')
-    l.table(df_leaderboard.sort_values(by='Puntaje Final', ascending=False).style.set_table_styles(
-    [{
-        'selector': 'th',
-        'props': [
-            ('background-color', '#000000'),
-            ('font-color', 'white')]
-    }]))
+    l.table(df_leaderboard.sort_values(by='Puntaje Final', ascending=False).style.set_table_styles(table_style))
     
 question_empty = st.empty()
 

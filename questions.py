@@ -1,4 +1,43 @@
-quiz_questions = [
+seccion3 = [
+{'question':"¿Qué es una variable?",
+                  'options': {
+                   "Un contenedor de valores":False,
+                   "Un sitio en la memoria RAM":False,
+                   "Un apuntador a un objeto":False,
+                   "Todas las anteriores":True,
+                   }},
+                  
+{'question':"El nombre de una variable puede iniciar con:",
+                  'options': {
+                   "Un número":False,
+                   "El caracter '_'":True,
+                   "Mayúscula":False,
+                   "Ambos 2. y 3.":False,
+                   }},
+]
+
+# Esqueleto para demostrar estructura de una lista de preguntas para la seccion N.
+seccionN = [
+  {
+  'question': "Una pregunta",
+  'options':{
+    "a1":False,
+    "a2":True,
+  }},
+            
+  {
+    'question':"Otra pregunta",
+    'options':{
+      "a3":True,
+      "a4":False,
+    }}
+              
+]
+
+
+
+
+default = [
 {'question':"What does NDVI stand for?",
                   'options': {
                    "Natural difference vegetation index":False,

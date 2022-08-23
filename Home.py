@@ -22,3 +22,10 @@ st.latex(r'''\text{score} = 100 \cdot e^{-0.02 \cdot timeElapsed}''')
 
 st.write("La cual aplica una penaliación al tiempo concurrido por pregunta. Aqui está la curva de la ecuación:")
 st.image(image, caption="Curva de score. Creado con Desmos.")
+
+st.subheader("Cuestionarios")
+st.write("Los cuestionarios estan organizados por modulos en la siguiente manera:")
+st.markdown("* Cuestionario 1: Resumen contenido del modulo 1.")
+st.markdown("* Cuestionario 3: Resumen contenido del modulo 2.")
+st.markdown("* Cuestionario i: Resumen contenido del modulo i.")
+
